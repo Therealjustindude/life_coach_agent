@@ -8,28 +8,38 @@ Currently powered by OpenAI GPT-4o-mini, with support for local models (Ollama) 
 ## Setup
 
 1. **Clone & enter project:**
+
 	```bash
 	git clone <repo_url>
 	cd life_coach_agent
 	```
+
 2. **Create & activate a virtual environment:**
+
 	```bash
 	python3 -m venv venv
 	source venv/bin/activate 
 	```
+	
 3. **Install dependencies:**
+
 	```bash
 	pip install -r requirements.txt
 	```
+	
 4. **Set up environment variables:**
+
 	```bash
 	touch .env
 	echo "OPENAI_API_KEY=your_key_here" >> .env
 	```
+	
 5. **Run the agent:**
+
 	```bash
 	python main.py
 	```
+	
 
 ## Features
 	•	AI life coaching: Ask questions about career, life balance, and personal growth.
