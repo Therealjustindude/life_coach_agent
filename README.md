@@ -54,15 +54,15 @@ Currently powered by OpenAI GPT-4o-mini, with support for local models (Ollama) 
   - `topic`: Tag for categorizing the conversation
 
 **Example with Metadata:**
-	
-	```bash
-	curl -X POST http://localhost:8000/chat \
-			-H "Content-Type: application/json" \
-			-d '{
-						"message": "Help me plan my week",
-						"metadata": {"user_id": "u1", "session_id": "s1", "topic": "planning"}
-					}'
-	```
+
+```bash
+curl -X POST http://localhost:8000/chat \
+    -H "Content-Type: application/json" \
+    -d '{
+        "message": "Help me plan my week",
+        "metadata": {"user_id": "u1", "session_id": "s1", "topic": "planning"}
+    }'
+```
 
 Access interactive API docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
