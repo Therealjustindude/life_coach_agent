@@ -1,0 +1,24 @@
+services:
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chroma_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./chroma_data:/chroma/.chroma/index
+
+  agent:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: life_coach_agent
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    volumes:
+      - .:/app
+    depends_on:
+      - chroma
+    ports:
+      - "8080:8000"

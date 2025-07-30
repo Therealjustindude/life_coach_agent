@@ -1,23 +1,12 @@
-from app.models import OpenAIModel
-from app.memory import SimpleMemory
+from app.memory.hybrid_memory import HybridMemory
 
 class LifeCoachAgent:
-	def __init__(self, brain = None, memory = None):
-		self.brain = brain or OpenAIModel()
-		self.memory = memory or SimpleMemory()
+    def __init__(self, model):
+        self.model = model  # injected model (OpenAIModel, etc.)
+        self.memory = HybridMemory()
 
-	def get_advice(self, question: str) -> str:
-		# Load past messages (short history)
-			conversation = self.memory.get_conversation()
-			messages = [{"role": "system", "content": "You are a thoughtful, practical, and encouraging life coach."}]
-			messages.extend(conversation)
-			messages.append({"role": "user", "content": question})
-
-			# Get response
-			response = self.brain.chat(messages)
-
-			# Save both user + agent messages
-			self.memory.add_message("user", question)
-			self.memory.add_message("assistant", response)
-
-			return response
+    def chat(self, user_input, metadata=None):
+				context = self.memory.get_context(user_input, where={"source": "chat", **(metadata or {})})
+				response = self.model.generate(context, user_input)
+				self.memory.save(user_input, response, metadata=metadata)
+				return response
