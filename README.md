@@ -41,15 +41,15 @@ Currently powered by OpenAI GPT-4o-mini, with support for local models (Ollama) 
 	```bash
 	curl -X POST http://localhost:8000/chat \
 	     -H "Content-Type: application/json" \
-	     -d '{"message": "Give me some career advice"}'
+	     -d '{"message": "Give me some career advice", "user_id": "u1"}'
 	```
 
 **Request Body Parameters:**
 
 - `message` (string, required): The prompt or question for the life coach agent.
+- `user_id` (string, required): A unique identifier for the user. Ensures that memory and context are isolated per user.
 - `metadata` (object, optional): A JSON object containing additional context tags for the conversation.  
-  Useful for multi-user support and filtering in the vector database. Example keys:  
-  - `user_id`: Unique identifier for the user  
+  Useful for further filtering in the vector database. Example keys:  
   - `session_id`: Identifier for the conversation session  
   - `topic`: Tag for categorizing the conversation
 
@@ -60,7 +60,8 @@ curl -X POST http://localhost:8000/chat \
     -H "Content-Type: application/json" \
     -d '{
         "message": "Help me plan my week",
-        "metadata": {"user_id": "u1", "session_id": "s1", "topic": "planning"}
+        "user_id": "u1",
+        "metadata": {"session_id": "s1", "topic": "planning"}
     }'
 ```
 
@@ -79,17 +80,18 @@ Access interactive API docs at: [http://localhost:8000/docs](http://localhost:80
 	```bash
 	curl -X POST http://localhost:8080/chat \
 	     -H "Content-Type: application/json" \
-	     -d '{"message": "Give me some career advice"}'
+	     -d '{"message": "Give me some career advice", "user_id": "u1"}'
 	```
 	
 
 ## Features
 - **AI life coaching**: Ask questions about career, life balance, and personal growth.
 - **Hybrid memory**: Short-term conversation buffer + Chroma vector DB for semantic recall.
+- **Structured prompting**: Uses a PromptBuilder module to combine system role, context, and user input for consistent, coach-like responses.
 - **Extensible**: Swap models (OpenAI ↔ Ollama), add tools (job search, calendar), or upgrade memory.
 - **API-first**: Interact over REST (ideal for frontends, bots, integrations).
 
 ## Next Steps:
-- Add multi-step reasoning (ReAct-style).
+- Add multi-step reasoning (ReAct-style for planning and reasoning).
 - Add integrations (calendar, job search).
 - Enhance deployment (cloud-ready configs, scaling).
