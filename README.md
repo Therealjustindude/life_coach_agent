@@ -90,6 +90,22 @@ Access interactive API docs at: [http://localhost:8000/docs](http://localhost:80
 - **Structured prompting**: Uses a PromptBuilder module to combine system role, context, and user input for consistent, coach-like responses.
 - **Extensible**: Swap models (OpenAI ↔ Ollama), add tools (job search, calendar), or upgrade memory.
 - **API-first**: Interact over REST (ideal for frontends, bots, integrations).
+- **Agent reasoning logs**: ReAct-style responses include `THOUGHT`, `ACTION`, and `ANSWER`. These are stored separately for auditing, debugging, or improvement.
+- **Logging**: The agent logs reasoning and metadata to the console. In the future, this can be routed to external monitoring services.
+
+## Reasoning Logs
+
+Every response includes structured reasoning:
+- **THOUGHT**: The agent’s internal reasoning
+- **ACTION**: Any tools or external steps the agent considered
+- **ANSWER**: The final message sent back to the user
+
+These are stored in a separate memory collection (`ReasoningMemory`) and can be queried for analysis or performance monitoring.
+
+-### Dev Tips
+
+- Set `APP_MODE=dev` in your `.env` file to include environment metadata and enable development-specific behavior.
+- You can toggle visibility of internal `THOUGHT` output in API responses (via a feature flag in code).
 
 ## Next Steps:
 - Add multi-step reasoning (ReAct-style for planning and reasoning).
