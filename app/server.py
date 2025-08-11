@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from app.agent.life_coach_agent import LifeCoachAgent
 from app.models.openai_model import OpenAIModel
 from app.utils.get_env import get_env
+from fastapi.middleware.cors import CORSMiddleware
 
 
 SHOW_THOUGHTS = get_env("SHOW_AGENT_THOUGHTS", "false").lower() == "true"
@@ -10,6 +11,17 @@ COACH_STYLE = get_env("COACH_STYLE", "default")
 INCLUDE_EXAMPLES = get_env("INCLUDE_EXAMPLES", "true").lower() == "true"
 
 app = FastAPI(title="Life Coach Agent API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",  # React
+        "http://localhost:5173",  # Vite
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize model + agent
 model = OpenAIModel()
