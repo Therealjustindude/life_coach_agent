@@ -6,7 +6,7 @@ class ReasoningMemory:
 	def __init__(self, host="chroma", port=8000):
 		self.client = chromadb.HttpClient(host=host, port=port)
 		self.collection = self.client.get_or_create_collection(name="reasoning_logs")
-	
+
 	def save(self, raw_response: str, user_id: str, session_id: str = None, topic: str = None):
 		"""
 		Save full reasoning (THOUGHT/ACTION/ANSWER) to chroma with metadata.
@@ -35,8 +35,8 @@ class ReasoningMemory:
 			where["session_id"] = session_id
 
 		results = self.collection.query(
-			query_texts = [query_text],
-			n_results = n_results,
-			where = where if where else None
+			query_texts=[query_text],
+			n_results=n_results,
+			where=where if where else None
 		)
 		return results.get("documents", [[]])[0]

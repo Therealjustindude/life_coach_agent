@@ -102,12 +102,48 @@ Every response includes structured reasoning:
 
 These are stored in a separate memory collection (`ReasoningMemory`) and can be queried for analysis or performance monitoring.
 
--### Dev Tips
+## Architecture (High Level)
 
-- Set `APP_MODE=dev` in your `.env` file to include environment metadata and enable development-specific behavior.
-- You can toggle visibility of internal `THOUGHT` output in API responses (via a feature flag in code).
+- **FastAPI service** → `/chat` endpoint
+- **LifeCoachAgent** → orchestrates prompting, model calls, logging, and memory writes
+- **ReactPromptBuilder** → fixed ReAct format (THOUGHT, ACTION, ANSWER) with swappable system prompt and optional examples
+- **HybridMemory** → short-term buffer + Chroma vector DB (scoped by `user_id`)
+- **ReasoningMemory** → separate Chroma collection for full reasoning traces (queryable)
+- **OpenAIModel** → current model backend (GPT‑4o‑mini)
+
+## Environment Variables
+
+| Name                 | Purpose                                                        | Default    |
+|----------------------|----------------------------------------------------------------|------------|
+| `OPENAI_API_KEY`     | API key for OpenAI model                                       | (required) |
+| `APP_MODE`           | App mode (`dev` or `prod`)                                     | `dev`      |
+| `SHOW_AGENT_THOUGHTS`| Show THOUGHT/ACTION in API response (`true`/`false`)           | `false`    |
+| `CHROMA_HOST`        | Chroma DB host                                                 | `chroma`   |
+| `CHROMA_PORT`        | Chroma DB port                                                 | `8000`     |
+| `COACH_STYLE`        | Prompt style (`default`, `cheerful`, `direct`, …)              | `default`  |
+| `INCLUDE_EXAMPLES`   | Include few‑shot examples in prompts (`true`/`false`)          | `true`     |
+
+> **Tip:** In dev you can experiment by changing `COACH_STYLE` and `INCLUDE_EXAMPLES` without code edits.
+
+## Dev Tips
+
+- Set `APP_MODE=dev` in `.env` for development behavior and metadata tagging.
+- Keep `SHOW_AGENT_THOUGHTS=false` for users; enable `true` only for debugging.
+- Tune prompt behavior via `COACH_STYLE` and `INCLUDE_EXAMPLES`.
 
 ## Next Steps:
-- Add multi-step reasoning (ReAct-style for planning and reasoning).
-- Add integrations (calendar, job search).
-- Enhance deployment (cloud-ready configs, scaling).
+
+- ✅ Add user-specific memory using `user_id` support in both hybrid memory and reasoning logs.
+- ✅ Enable metadata tagging (`session_id`, `topic`, `environment`, `timestamp`) for ChromaDB entries.
+- ✅ Add ReAct-style reasoning logs with `THOUGHT`, `ACTION`, and `ANSWER` fields.
+- ✅ Implement feature flag for toggling visibility of `THOUGHT` in API responses.
+- ✅ Enable `APP_MODE` environment configuration to switch between dev/prod behavior.
+
+### Upcoming Priorities:
+- 🔍 Set up logging and monitoring for production (e.g. Sentry, Logtail, or similar service).
+- 🤖 Continue to Build out multi-step reasoning with tool execution (full ReAct loop).
+- 🧠 Improve agent quality (context window, prompt engineering, fallback logic).
+- 🧪 Add tests for memory saving, prompt building, and response generation.
+- 📦 Refactor and modularize memory classes for easier expansion.
+- 🌐 Add auth + user signup (optional, for multi-user UI integration).
+- 🚀 Prepare cloud-ready Docker setup for deployment to Fly.io, Render, or AWS.

@@ -1,31 +1,31 @@
-# app/agent/react_prompt_builder.py
-from typing import Optional, List
+from typing import Optional
+from app.prompts.templates import PROMPT_TEMPLATES
 
-class ReActPromptBuilder:
-    def __init__(self, role: str = "You are an AI life coach. Think step-by-step to give actionable, structured advice."):
-        self.system_prompt = role
+class ReactPromptBuilder:
+    def __init__(self, coach_style: str, include_examples: bool = True):
+        # Resolve template safely with default fallback
+        self.template = PROMPT_TEMPLATES.get(coach_style, PROMPT_TEMPLATES["default"])
+        self.include_examples = include_examples
 
-    def build(
-        self,
-        context: Optional[str],
-        user_input: str,
-        extra_instructions: Optional[List[str]] = None
-    ) -> str:
-        """
-        Build a ReAct-style prompt with instructions for reasoning.
-        """
-        instructions_block = "\n".join(extra_instructions) if extra_instructions else ""
-        context_block = f"\nRelevant context:\n{context}\n" if context else ""
+    def build_prompt(self, context: Optional[str], user_input: str) -> str:
+        parts = [
+            f"System: {self.template['system']}",
+            f"Format:\n{self.template['format']}",
+        ]
 
-        return f"""{self.system_prompt}
+        # Include examples (few-shot) if configured and present in template
+        if self.include_examples and self.template.get("examples"):
+            example_str = "\n\n".join(
+                f"Example Input: {ex['input']}\nExample Output:\n{ex['output']}"
+                for ex in self.template["examples"]
+            )
+            parts.append(f"Examples:\n{example_str}")
 
-{instructions_block}{context_block}
+        # Append context only if provided and non-empty
+        if context:
+            ctx = context.strip()
+            if ctx:
+                parts.append(f"Context:\n{ctx}")
 
-Follow this reasoning format:
-THOUGHT: Explain your internal reasoning to plan the response.
-ACTION: (Optional) Indicate if you'd take an action (e.g., query memory or external tools).
-ANSWER: Provide a clear, step-by-step actionable answer for the user.
-
-User request:
-{user_input}
-"""
+        parts.append(f"User: {user_input}")
+        return "\n\n".join(parts).strip()  # normalize trailing whitespace
