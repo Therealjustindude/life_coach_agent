@@ -73,7 +73,14 @@ class LifeCoachAgent:
             tool_result = self.tools.run(tool_name, tool_arg or "")
 
             # Build a follow-up prompt that includes tool output, then get final answer
-            enriched_context = f"{context}\n\nTOOL RESULT ({tool_name}):\n{tool_result}"
+            post_tool_instruction = (
+                "Post-Tool Instruction:\n"
+                "Now that TOOL RESULT is available, do not include THOUGHT or ACTION in your next message.\n"
+                "Provide only the final ANSWER."
+            )
+            enriched_context = (
+                f"{context}\n\nTOOL RESULT ({tool_name}):\n{tool_result}\n\n{post_tool_instruction}"
+            )
             followup_prompt = self.prompt_builder.build_prompt(
                 context=enriched_context,
                 user_input=user_input

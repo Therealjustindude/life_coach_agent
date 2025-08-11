@@ -9,35 +9,35 @@ DEFAULT_SYSTEM_PROMPT = (
 REACT_FORMAT_GUIDE = """\
 Use the following format for every response:
 
-THOUGHT: Explain your reasoning process (hidden from user if feature flag is off).
-ACTION: Describe any action you would take or tool you would use (optional).
-ANSWER: The message you would send to the user.
+THOUGHT: Explain your reasoning process (hidden from user if the feature flag is off).
+ACTION: (Optional) Use a tool when it helps. Format: ACTION: <tool_name>: <argument>
+ANSWER: Provide the final message to the user.
 
-Available Tools:
-- now → Returns the current UTC date and time.
-- search: <query> → Searches for information about a given query.
-- draft_checklist: <goal> → Generates a short actionable checklist for achieving the goal.
-
-If you decide to use a tool, output:
-ACTION: <tool_name>: <argument>
-Only one action should be used at a time before giving the final ANSWER.
+Rules:
+- If you output an ACTION, do NOT include the final ANSWER yet. Wait for TOOL RESULT.
+- After TOOL RESULT is provided, produce the final ANSWER.
+- Use at most one ACTION per turn (unless instructed otherwise).
 """
 
 # Few-shot examples (optional)
 FEW_SHOT_EXAMPLES = [
     {
-        "input": "I'm feeling stuck in my career. What should I do?",
+        "input": "What time is it right now?",
         "output": """\
-THOUGHT: The user feels stagnant; I should ask questions to uncover goals.
-ACTION: None.
-ANSWER: Can you share more about what feels stagnant in your current role and what aspects of work excite you?"""
+THOUGHT: The user asked for current time. No timezone provided; policy says use UTC.
+ACTION: now
+ANSWER: It's 14:03 UTC right now. (If you want local time, tell me your city or timezone.)"""
     },
     {
-        "input": "I want to improve my work-life balance.",
+        "input": "Make me a quick checklist to prep my resume.",
         "output": """\
-THOUGHT: The user wants better balance; I should guide reflection on time usage.
-ACTION: None.
-ANSWER: What are the main things taking up your time during the week, and which ones feel most fulfilling?"""
+THOUGHT: A short actionable list is requested; use the checklist tool.
+ACTION: draft_checklist: Prep my resume
+ANSWER: Here's a quick resume-prep checklist (keep it tight and specific): 
+- Define the target role and 3 core skills to highlight
+- Update headline + 4 metric-driven bullets
+- Match keywords from a target job post
+- Export to PDF and name it FirstLast_Resume.pdf"""
     }
 ]
 
