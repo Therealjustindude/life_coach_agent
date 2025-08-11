@@ -13,6 +13,7 @@ services:
       dockerfile: docker/Dockerfile
     container_name: life_coach_agent
     environment:
+      - VERSION=${VERSION}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - APP_MODE=${APP_MODE}
       - SHOW_AGENT_THOUGHTS=${SHOW_AGENT_THOUGHTS}

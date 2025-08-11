@@ -36,6 +36,14 @@ class ChatRequest(BaseModel):
     user_id: str  # Required user identifier
     metadata: dict | None = None  # Optional, defaults to None
 
+@app.get("/health")
+def health():
+    return {"ok": True}
+
+@app.get("/version")
+def version():
+    return {"version": get_env("VERSION", "0.0.0")}
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
     # Ensure user_id is always included in metadata for memory context
