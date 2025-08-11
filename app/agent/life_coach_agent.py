@@ -43,7 +43,16 @@ class LifeCoachAgent:
             user_input=user_input
         )
 
-        response = self.model.generate(prompt)
+        try:
+            response = self.model.generate(prompt)
+        except Exception as e:
+            # log & friendly fallback
+            log_to_console(metadata.get("user_id", "unknown"), f"[MODEL_ERROR] {e}")
+            response = (
+                "ANSWER: I hit a hiccup generating a full response just now. "
+                "Here’s a quick next step: write down your top objective for this week, "
+                "and the single smallest action you can take today to move toward it."
+            )
         
         # Log reasoning to console
         log_to_console(metadata.get("user_id", "unknown"), response)
