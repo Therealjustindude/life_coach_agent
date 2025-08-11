@@ -80,17 +80,22 @@ Access interactive API docs at: [http://localhost:8000/docs](http://localhost:80
 	```bash
 	curl -X POST http://localhost:8080/chat \
 	     -H "Content-Type: application/json" \
-	     -d '{"message": "Give me some career advice", "user_id": "u1"}'
+	     -d '{"message": "Hi coach", "user_id": "u1"}'
 	```
-	
+3. **Test Actions with tools:**
+	```bash
+	curl -X POST http://localhost:8080/chat \
+			-H "Content-Type: application/json" \
+			-d '{"message":"What time is it right now, and make me a quick checklist to prep my resume", "user_id":"u1"}'
+	```
 
-## Features
 - **AI life coaching**: Ask questions about career, life balance, and personal growth.
 - **Hybrid memory**: Short-term conversation buffer + Chroma vector DB for semantic recall.
 - **Structured prompting**: Uses a PromptBuilder module to combine system role, context, and user input for consistent, coach-like responses.
 - **Extensible**: Swap models (OpenAI ↔ Ollama), add tools (job search, calendar), or upgrade memory.
 - **API-first**: Interact over REST (ideal for frontends, bots, integrations).
-- **Agent reasoning logs**: ReAct-style responses include `THOUGHT`, `ACTION`, and `ANSWER`. These are stored separately for auditing, debugging, or improvement.
+- **Agent reasoning logs**: ReAct-style responses include `THOUGHT`, `ACTION`, and `ANSWER`. These are stored separately for auditing, debugging, or improvement.  
+  _When adding new tools, update the ReAct format guide in the prompt template so the model knows available tool names, arguments, and when to use them._
 - **Logging**: The agent logs reasoning and metadata to the console. In the future, this can be routed to external monitoring services.
 
 ## Reasoning Logs
@@ -130,16 +135,10 @@ These are stored in a separate memory collection (`ReasoningMemory`) and can be 
 - Set `APP_MODE=dev` in `.env` for development behavior and metadata tagging.
 - Keep `SHOW_AGENT_THOUGHTS=false` for users; enable `true` only for debugging.
 - Tune prompt behavior via `COACH_STYLE` and `INCLUDE_EXAMPLES`.
-
-## Next Steps:
-
-- ✅ Add user-specific memory using `user_id` support in both hybrid memory and reasoning logs.
-- ✅ Enable metadata tagging (`session_id`, `topic`, `environment`, `timestamp`) for ChromaDB entries.
-- ✅ Add ReAct-style reasoning logs with `THOUGHT`, `ACTION`, and `ANSWER` fields.
-- ✅ Implement feature flag for toggling visibility of `THOUGHT` in API responses.
-- ✅ Enable `APP_MODE` environment configuration to switch between dev/prod behavior.
+- Whenever you add or rename tools in `ToolRegistry`, also update the `REACT_FORMAT_GUIDE` in `template.py` (or wherever your prompt template is stored) so the model is aware of the tool names and their expected usage format.
 
 ### Upcoming Priorities:
+- 📋 Keep prompt template in sync with available tools (update tool list and usage examples in format guide).
 - 🔍 Set up logging and monitoring for production (e.g. Sentry, Logtail, or similar service).
 - 🤖 Continue to Build out multi-step reasoning with tool execution (full ReAct loop).
 - 🧠 Improve agent quality (context window, prompt engineering, fallback logic).
