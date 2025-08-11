@@ -2,11 +2,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from app.agent.life_coach_agent import LifeCoachAgent
 from app.models.openai_model import OpenAIModel
-import os
+from app.utils.get_env import get_env
 
-SHOW_THOUGHTS = os.getenv("SHOW_AGENT_THOUGHTS", "false").lower() == "true"
-COACH_STYLE = os.getenv("COACH_STYLE", "default")
-INCLUDE_EXAMPLES = os.getenv("INCLUDE_EXAMPLES", "true").lower() == "true"
+
+SHOW_THOUGHTS = get_env("SHOW_AGENT_THOUGHTS", "false").lower() == "true"
+COACH_STYLE = get_env("COACH_STYLE", "default")
+INCLUDE_EXAMPLES = get_env("INCLUDE_EXAMPLES", "true").lower() == "true"
 
 app = FastAPI(title="Life Coach Agent API")
 

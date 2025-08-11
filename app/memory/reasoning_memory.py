@@ -1,11 +1,14 @@
 import chromadb
 import datetime
 from uuid import uuid4
+from app.utils.get_env import get_env
 
 class ReasoningMemory:
-	def __init__(self, host="chroma", port=8000):
+	def __init__(self):
+		host = get_env("CHROMA_HOST", "chroma")
+		port = int(get_env("CHROMA_PORT", "8000"))
 		self.client = chromadb.HttpClient(host=host, port=port)
-		self.collection = self.client.get_or_create_collection(name="reasoning_logs")
+		self.collection = self.client.get_or_create_collection(name="reasoning_memory")
 
 	def save(self, raw_response: str, user_id: str, session_id: str = None, topic: str = None):
 		"""

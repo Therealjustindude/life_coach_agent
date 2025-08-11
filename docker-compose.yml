@@ -18,8 +18,8 @@ services:
       - SHOW_AGENT_THOUGHTS=${SHOW_AGENT_THOUGHTS}
       - INCLUDE_EXAMPLES=${INCLUDE_EXAMPLES}
       - COACH_STYLE=${COACH_STYLE}
-      - CHROMA_HOST=chroma
-      - CHROMA_PORT=8000
+      - VECTOR_HOST=${VECTOR_HOST}
+      - VECTOR_PORT=${VECTOR_PORT}
     volumes:
       - .:/app
     depends_on:
