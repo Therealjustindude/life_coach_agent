@@ -13,7 +13,7 @@ app = FastAPI(title="Life Coach Agent API")
 # Initialize model + agent
 model = OpenAIModel()
 agent = LifeCoachAgent(
-    model=OpenAIModel(),
+    model=model,
     coach_style=COACH_STYLE,
     include_examples=INCLUDE_EXAMPLES
 )

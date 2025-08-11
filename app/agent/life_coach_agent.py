@@ -20,7 +20,7 @@ class LifeCoachAgent:
 
     def chat(self, user_input, metadata=None):
         context = self.memory.get_context(user_input, where={"user_id": metadata.get("user_id")})
-        prompt = self.prompt_builder.build(
+        prompt = self.prompt_builder.build_prompt(
             context=context,
             user_input=user_input
         )

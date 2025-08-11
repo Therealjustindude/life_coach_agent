@@ -1,5 +1,5 @@
 from typing import Optional
-from app.prompts.templates import PROMPT_TEMPLATES
+from app.prompts.template import PROMPT_TEMPLATES
 
 class ReactPromptBuilder:
     def __init__(self, coach_style: str, include_examples: bool = True):
