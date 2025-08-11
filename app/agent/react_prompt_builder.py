@@ -7,25 +7,27 @@ class ReactPromptBuilder:
         self.template = PROMPT_TEMPLATES.get(coach_style, PROMPT_TEMPLATES["default"])
         self.include_examples = include_examples
 
-    def build_prompt(self, context: Optional[str], user_input: str) -> str:
+    def build_prompt(self, context: Optional[str], user_input: str, tools_guide: Optional[str] = None) -> str:
         parts = [
             f"System: {self.template['system']}",
             f"Format:\n{self.template['format']}",
         ]
-
-        # Include examples (few-shot) if configured and present in template
+        
+        if tools_guide:
+            parts.append(f"Available Tools:\n{tools_guide}")
+        
         if self.include_examples and self.template.get("examples"):
             example_str = "\n\n".join(
                 f"Example Input: {ex['input']}\nExample Output:\n{ex['output']}"
                 for ex in self.template["examples"]
             )
             parts.append(f"Examples:\n{example_str}")
-
-        # Append context only if provided and non-empty
+        
         if context:
             ctx = context.strip()
             if ctx:
                 parts.append(f"Context:\n{ctx}")
-
+        
         parts.append(f"User: {user_input}")
-        return "\n\n".join(parts).strip()  # normalize trailing whitespace
+
+        return "\n\n".join(parts).strip()

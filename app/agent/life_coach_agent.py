@@ -7,7 +7,6 @@ from app.memory.chroma_memory import ChromaMemory
 from app.utils.get_env import get_env
 from app.agent.tools.registry import ToolRegistry
 
-
 SHOW_THOUGHTS = get_env("SHOW_AGENT_THOUGHTS", "false").lower() == "true"
 
 class LifeCoachAgent:
@@ -22,6 +21,7 @@ class LifeCoachAgent:
         self.reasoning_memory = ReasoningMemory()
         self.prompt_builder = ReactPromptBuilder(coach_style=coach_style, include_examples=include_examples)
         self.tools = ToolRegistry()
+        self.tools_guide = self.tools.describe()
 
     def chat(self, user_input, metadata=None):
         filters = {}
@@ -43,6 +43,7 @@ class LifeCoachAgent:
         prompt = self.prompt_builder.build_prompt(
             context=context,
             user_input=user_input
+            tools_guide=self.tools_guide
         )
 
         try:
@@ -83,7 +84,8 @@ class LifeCoachAgent:
             )
             followup_prompt = self.prompt_builder.build_prompt(
                 context=enriched_context,
-                user_input=user_input
+                user_input=user_input,
+                tools_guide=self.tools_guide
             )
             try:
                 second = self.model.generate(followup_prompt)
