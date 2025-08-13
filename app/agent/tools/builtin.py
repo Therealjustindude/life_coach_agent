@@ -1,9 +1,9 @@
 # app/agent/tools/builtin.py
-from datetime import datetime
+from datetime import datetime, UTC
 
 def tool_now(_: str = "") -> str:
     """Return current UTC timestamp."""
-    return datetime.utcnow().isoformat() + "Z"
+    return datetime.now(UTC).isoformat()
 
 def tool_search_stub(query: str) -> str:
     """Fake search tool for development; replace later with real search."""

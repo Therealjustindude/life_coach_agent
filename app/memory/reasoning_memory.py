@@ -1,5 +1,5 @@
 import chromadb
-import datetime
+from datetime import datetime, UTC
 from uuid import uuid4
 from app.utils.get_env import get_env
 
@@ -19,7 +19,7 @@ class ReasoningMemory:
 			"user_id": user_id,
 			"session_id": session_id or "default",
 			"topic": topic or "general",
-			"created_at": datetime.datetime.utcnow().isoformat()
+			"created_at": datetime.now(UTC).isoformat()
 		}
 		self.collection.add(
 			documents=[raw_response],

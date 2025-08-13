@@ -37,3 +37,7 @@ shell-agent:
 # Exec into the chroma container
 shell-chroma:
 	$(COMPOSE) exec chroma /bin/bash
+
+test:
+	@echo "Running pytest..."
+	docker compose run --rm -e PYTHONPATH=/app agent pytest -v

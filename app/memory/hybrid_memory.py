@@ -21,7 +21,12 @@ class HybridMemory:
         summarize_fn: Optional[Callable[[str], str]] = None,
     ) -> str:
         # 1) recent
-        recent_lines = getattr(self.buffer, "get_last_n", self.buffer.get_all)(limit)  # fallback if not added
+        getter = getattr(self.buffer, "get_last_n", None)
+        if callable(getter):
+            recent_lines = getter(limit)
+        else:
+            recent_lines = self.buffer.get_all()
+            
         recent_block = self._join("Recent conversation:", recent_lines)
 
         # 2) semantic

@@ -3,3 +3,6 @@ python-dotenv
 chromadb
 fastapi
 uvicorn
+
+# dev / testing
+pytest>=8.0

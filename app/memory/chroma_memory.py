@@ -1,4 +1,5 @@
-import datetime, os, uuid
+import os, uuid
+from datetime import datetime, UTC
 import chromadb
 from app.utils.get_env import get_env
 
@@ -13,7 +14,11 @@ class ChromaMemory:
         self.default_metadata = default_metadata or {"source": "chat", "environment": mode}
 
     def save_context(self, text: str, metadata: dict | None = None):
-        meta = {**self.default_metadata, **(metadata or {}), "created_at": datetime.datetime.utcnow().isoformat()}
+        meta = {
+            **self.default_metadata, 
+            **(metadata or {}), 
+            "created_at": datetime.now(UTC).isoformat()
+        }
         self.collection.add(
             documents=[text],
             metadatas=[meta],
