@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Cancel older in-flight runs for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Optional: speed up builds by caching Docker layers
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build agent image
+        run: |
+          docker compose build agent
+
+      # Run tests inside the agent container so imports & deps match production
+      - name: Run pytest (with dependencies)
+        env:
+          PYTHONPATH: /app
+          # set fake key if your code references it (your tests use stubs, but safe to include)
+          OPENAI_API_KEY: "test-key"
+        run: |
+          # compose will start chroma_db due to depends_on; agent reaches it by service name
+          docker compose run --rm agent pytest -v
+
+      # Always clean up containers & networks created by compose run
+      - name: Teardown
+        if: always()
+        run: |
+          docker compose down -v
